@@ -1,7 +1,6 @@
 {
   "version": "0.1.1",
-  "name": "admatrix-node-sdk",
-  "private": true,
+  "name": "matrix-node-sdk",
   "main": "./adsdk.js",
   "dependencies": {
     "async": "^0.7.0",
