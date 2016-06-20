@@ -49,7 +49,7 @@ function sendDeviceCommand(eventName, payload, cb, options) {
               debug('Register ok');
               var theEvent = {
                 t: eventName,
-                deviceId: admatrix.config.device.id,
+                deviceId: admatrix.config.device.identifier,
                 p: payload
               };
               debug('[ss]', theEvent);
