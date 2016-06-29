@@ -111,7 +111,7 @@ function listDevices(options, cb) {
 
 // get device token here
 function authenticateDevice(deviceId, deviceSecret, cb) {
-  var url = admatrix.config.url.device.retrieveToken + '?access_token=' + admatrix.state.user.token;
+  var url = admatrix.config.url.device.retrieveToken;
   var postOpts = {
     device_id: deviceId,
     device_secret: deviceSecret
