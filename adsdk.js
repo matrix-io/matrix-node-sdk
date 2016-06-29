@@ -43,6 +43,7 @@
 
     device: {
       //TODO: remove all these crappy set tokens and state vars, should be managed by parent
+      getToken: getDeviceToken,
       setToken: setDeviceToken,
       setId: setDeviceId,
       list: Device.list,
@@ -166,6 +167,20 @@ function getLog(cb){
   function setUserToken(token){
     // TODO: Add error checking
     admatrix.state.user.token = token;
+  }
+
+  function getDeviceToken(options, cb) {
+    if ( _.isUndefined(options)){
+      options = adsdk.defaultOptions;
+    }
+
+    //make finished urls available
+    makeUrls( options.apiServer );
+
+    Device.authenticate(options.deviceId, options.deviceSecret, function(err, res) {
+      if (err) return cb(new Error('Device Token Retrieval Error: '+err))
+      cb(null, res.results.device_token);
+    })
   }
 
   function authenticate(options, cb) {
