@@ -56,8 +56,9 @@ var RequestHandler = require('./RequestHandler');
     var url    = admatrix.config.url.auth.user;
 
     var  form = {
-     client_id : admatrix.state.client.id,
-     client_secret: admatrix.state.client.secret,
+      // remove need for client auth on endpoint. hardcode for now.
+     client_id : 'AdMobilizeClientId',
+     client_secret: 'AdMobilizeClientId',
      username: options.username,
      password: options.password,
      grant_type: 'password'
