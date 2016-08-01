@@ -82,7 +82,8 @@ function rebootDevice(deviceId, cb) {
    var params = {
      device_id: options.deviceId,
      name: options.deviceName,
-     description : options.deviceDescription
+     description : options.deviceDescription,
+     user: options.user
    };
 
    debug(params);
