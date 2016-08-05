@@ -115,8 +115,8 @@ function authenticateDevice(deviceId, deviceSecret, cb) {
   var url = admatrix.config.url.device.retrieveToken;
   var postOpts = {
     device_id: deviceId,
-    device_secret: deviceSecret
-    // jwt_token: true
+    device_secret: deviceSecret,
+    jwt_token: true
   }
 
   RequestHandler.post({

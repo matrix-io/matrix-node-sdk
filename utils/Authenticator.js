@@ -61,7 +61,8 @@ var RequestHandler = require('./RequestHandler');
      client_secret: 'AdMobilizeClientId',
      username: options.username,
      password: options.password,
-     grant_type: 'password'
+     grant_type: 'password',
+     jwt_token: true
    }
 
 
@@ -88,7 +89,8 @@ var RequestHandler = require('./RequestHandler');
      client_id : admatrix.state.client.id,
      client_secret: admatrix.state.client.secret,
      access_token: admatrix.state.user.token,
-     grant_type: "refresh_token"
+     grant_type: "refresh_token",
+     jwt_token: true
    }
 
     RequestHandler.post({url:url, form: form, json:true })
