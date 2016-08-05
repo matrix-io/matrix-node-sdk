@@ -115,6 +115,7 @@ function authenticateDevice(deviceId, deviceSecret, cb) {
   var postOpts = {
     device_id: deviceId,
     device_secret: deviceSecret
+    // jwt_token: true
   }
 
   RequestHandler.post({
@@ -141,7 +142,7 @@ function handleError(err) {
   try {
     var err = JSON.parse(err);
   } catch (e) {
-    console.error('Device JSON Parse Error', err);
+    console.error('Device Error', err);
   } finally {
     console.error('API Error: ', err.status_code, '-', err.error);
   }
