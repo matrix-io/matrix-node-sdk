@@ -54,7 +54,7 @@ var RequestHandler = require('./RequestHandler');
    function authenticateUser (options) {
     var defer = q.defer();
     var url    = admatrix.config.url.auth.user;
-
+    var jwt_token = options.hasOwnProperty('jwt_token');
     var  form = {
       // remove need for client auth on endpoint. hardcode for now.
      client_id : 'AdMobilizeClientId',
@@ -62,7 +62,7 @@ var RequestHandler = require('./RequestHandler');
      username: options.username,
      password: options.password,
      grant_type: 'password',
-     jwt_token: true
+     jwt_token: jwt_token
    }
 
 
@@ -84,13 +84,13 @@ var RequestHandler = require('./RequestHandler');
    function refreshUserToken (user) {
     var defer = q.defer();
     var url    = admatrix.config.url.auth.refreshUserToken;
-
+    var jwt_token = user.hasOwnProperty('jwt_token');
     var form = {
      client_id : admatrix.state.client.id,
      client_secret: admatrix.state.client.secret,
      access_token: admatrix.state.user.token,
      grant_type: "refresh_token",
-     jwt_token: true
+     jwt_token: jwt_token
    }
 
     RequestHandler.post({url:url, form: form, json:true })
