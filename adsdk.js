@@ -314,16 +314,15 @@ function authenticateUser(options, cb) {
   });
 }
 
-function registerUser(options, cb) {
-  // log('---> user', options);
-  if (has(options, ['username', 'password'] === false)) {
+function registerUser(username, password, clientId, cb) {
+  if (_.isUndefined(username) || _.isUndefined(password) || _.isUndefined(clientId)) {
     console.error('No username and password passed to registerUser()')
     return;
   }
 
-  Register.registerUser(options).then(function(response) {
+  Register.registerUser(username, password, clientId).then(function(response) {
     admatrix.state.user = {
-      name: options.username,
+      name: username,
       token: response
     };
     cb(null, response);
@@ -375,8 +374,6 @@ function uninstallApp(app, deviceId, cb) {
 function updateApp() {
 
 }
-
-function registerUser(options, cb){}
 
 function subscribeStream(options, cb){}
 function publishStream(options, cb){}

@@ -16,21 +16,21 @@ var RequestHandler = require('./RequestHandler');
    * @param {User} user
    * @param {Function} callback(error,responseJSON)
    */
-   function registerUser (options) {
+   function registerUser (username, password, clientId) {
     var defer  = q.defer();
 
     var url    = admatrix.config.url.auth.registerUser;
 
     var params = {
-     username: options.username,
-     password: options.password,
-     // For MatrixOS
-     client_id: '07442ec6-f533-11e5-9ce9-5e5517507c66'
+     username: username,
+     password: password,
+     client_id: clientId
+     //client_id: '07442ec6-f533-11e5-9ce9-5e5517507c66' // For MatrixOS
    };
 
    RequestHandler.post({url:url, form:params, json:true})
      .then(function(body){
-      log('user made'.blue)
+      //log('user made'.blue)
        admatrix.state.user.token = body.results.access_token;
        defer.resolve(body.results)
      }).then(null,defer.reject);
