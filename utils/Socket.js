@@ -91,7 +91,9 @@ function initSocket(sUrl, cb){
   var url = require('url');
   sUrl = url.parse(sUrl);
   sUrl.protocol = 'wss';
-  sUrl.port = '';
+  if ( sUrl.hostname.indexOf('localhost') > -1 ){
+    sUrl.protocol = 'http'
+  }
   // sUrl.pathname = 'engine.io';
 
   debug(sUrl)
