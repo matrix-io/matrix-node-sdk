@@ -90,16 +90,20 @@ function initSocket(sUrl, cb){
 
   var url = require('url');
   sUrl = url.parse(sUrl);
-  // sUrl.protocol = 'ws:';
-  sUrl.pathname = 'engine.io';
+  sUrl.protocol = 'wss';
+  sUrl.port = '';
+  // sUrl.pathname = 'engine.io';
 
-  require('net').connect({
-    port: sUrl.port,
-    host: sUrl.hostname
-  }, function(res){
-      var io = require('engine.io-client')(url.format(sUrl));
+  debug(sUrl)
+
+  debug('Trying Socket Connection:'.grey,  require('url').format(sUrl) );
+
+      var io = require('engine.io-client')(url.format(sUrl), {
+        transports: [ 'websocket', 'polling' ],
+      });
+
       io.on('open', function(){
-        debug('Socket Connection:'.grey,  require('url').format(sUrl) );
+        debug('Socket Connection:'.green,  require('url').format(sUrl) );
         socket = io;
         io.send(JSON.stringify({
           channel : 'client-register',
@@ -116,9 +120,6 @@ function initSocket(sUrl, cb){
       });
 
       cb(null, io);
-  }).on('error', function(err){
-    return cb('No Streaming Server Visible'.red + ' @ ' +require('url').format(sUrl) + err );
-  });
 
 }
 
