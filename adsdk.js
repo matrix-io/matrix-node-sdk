@@ -10,7 +10,9 @@ log       = console.log;
 _         = require('lodash');
 debug     = D('sdk');
 
+var v = JSON.parse(require('fs').readFileSync(__dirname + '/package.json')).version;
 
+debug( '🔓  [ MATRIX ] Auth SDK v'.yellow + v )
 
 
 // Internal Modules
