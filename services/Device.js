@@ -9,8 +9,30 @@ module.exports = {
   register: registerDevice,
   create: createDevice,
   reboot: rebootDevice,
+  getDeviceSecret: getDeviceSecret,
+}
+
+//   `/v2/device/secret`
+// ```device_id
+// access_token)
+function getDeviceSecret(deviceId, cb){
+  var form = {
+    device_id: deviceId,
+    access_token: admatrix.state.user.token
+  };
+
+  RequestHandler.post({
+    url: admatrix.config.url.device.secret,
+    form: form,
+    json: true
+  }).then(function (results) {
+    cb(null, results);
+  }).fail(cb);
 
 }
+
+
+
 
 function createNewDevice(options, cb) {
   // POST /v1/device/create

@@ -91,6 +91,10 @@ function initSocket(sUrl, cb){
   var url = require('url');
   sUrl = url.parse(sUrl);
   sUrl.protocol = 'wss';
+  // if fixed ip, 0-9 use ws
+  if ( !_.isNaN( parseInt(sUrl[sUrl.length-1]) ) ){
+    sUrl.protocol = 'ws';
+  }
   if ( sUrl.hostname.indexOf('localhost') > -1 ){
     sUrl.protocol = 'http'
   }

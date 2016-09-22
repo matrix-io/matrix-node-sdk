@@ -52,6 +52,7 @@ function populateUrls(apiUrl, streamingUrl) {
       heartbeat: '/v1/device/heartbeat',
       list: '/v1/device/retrieve',
       event: '/v1/device/event',
+      secret: '/v2/device/secret',
     },
     app: {
       deploy: '/v1/app/deploy',
