@@ -9,29 +9,24 @@ module.exports = {
   register: registerDevice,
   create: createDevice,
   reboot: rebootDevice,
-  getDeviceSecret: getDeviceSecret,
+  getSecret: getDeviceSecret,
 }
 
 //   `/v2/device/secret`
 // ```device_id
 // access_token)
 function getDeviceSecret(deviceId, cb){
-  var form = {
-    device_id: deviceId,
-    access_token: admatrix.state.user.token
-  };
 
-  RequestHandler.post({
-    url: admatrix.config.url.device.secret,
-    form: form,
+  RequestHandler.get({
+    url: 'https://dev-demo.admobilize.com/v2/device/secret?'
+    + 'access_token=' + admatrix.state.user.token + '&'
+    + 'device_id=' + deviceId,
     json: true
   }).then(function (results) {
     cb(null, results);
-  }).fail(cb);
+  });
 
 }
-
-
 
 
 function createNewDevice(options, cb) {

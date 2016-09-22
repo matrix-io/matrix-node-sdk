@@ -58,7 +58,8 @@ var adsdk = {
     reboot: Device.reboot,
     getAppList: Device.getAppList,
     create: Device.create,
-    register: Device.register
+    register: Device.register,
+    getSecret: Device.getSecret,
   },
 
   user: {
