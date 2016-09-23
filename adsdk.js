@@ -49,9 +49,9 @@ var adsdk = {
   },
 
   device: {
-    //TODO: remove all these crappy set tokens and state vars, should be managed by parent
     getToken: getDeviceToken,
     setToken: setDeviceToken,
+    //TODO: remove all these crappy set tokens and state vars, should be managed by parent
     setId: setDeviceId,
     list: Device.list,
     checkUpdates: checkUpdates,
@@ -187,8 +187,8 @@ function getDeviceToken(options, cb) {
 
   Device.authenticate(options.deviceId, options.deviceSecret, function(err, res) {
     if (err) return cb(new Error('Device Token Retrieval Error: '+err))
-    debug('Device.getToken>', res);
-    cb(null, res.results.device_token);
+    debug('Device.getToken>', res.results.deviceToken);
+    cb(null, res.results.deviceToken);
   })
 }
 
@@ -200,7 +200,7 @@ function authenticate(options, cb) {
     cb = function(){};
   }
 
-  if (has(options, ['clientId', 'clientSecret', 'apiServer']) == false) {
+  if (has(options, ['clientId', 'clientSecret', 'apiServer']) === false) {
     // TODO: use cb
     console.error('No clientId, clientSecret, or apiServer passed to start()')
     return;
