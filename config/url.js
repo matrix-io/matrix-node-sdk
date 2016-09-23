@@ -43,7 +43,7 @@ function populateUrls(apiUrl, streamingUrl) {
     device: {
       appList:  '/v1/app/getAllByDevice',
       create: '/v1/device/create',
-      retrieveToken: '/v1/device/token',
+      retrieveToken: '/v2/device/token',
       register: '/v1/device/register',
       update: '/v1/device/update',
       create: '/v1/device/create',
