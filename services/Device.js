@@ -12,19 +12,18 @@ module.exports = {
   getSecret: getDeviceSecret,
 }
 
-//   `/v2/device/secret`
-// ```device_id
-// access_token)
+
 function getDeviceSecret(deviceId, cb){
 
   RequestHandler.get({
-    url: 'https://dev-demo.admobilize.com/v2/device/secret?'
-    + 'access_token=' + admatrix.state.user.token + '&'
+    url: admatrix.config.url.device.secret
+    + '?access_token=' + admatrix.state.user.token + '&'
     + 'device_id=' + deviceId,
     json: true
   }).then(function (results) {
+    debug(results);
     cb(null, results);
-  });
+  }).fail(cb);
 
 }
 
