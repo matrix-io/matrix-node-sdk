@@ -39,11 +39,11 @@ function sendDeviceCommand(eventName, payload, cb, options) {
           try {
             msg = JSON.parse(msg);
           } catch (e) {
-            console.error(e);
+            cb(e);
           }
           switch (msg.channel) {
             case 'register-fail':
-              console.error('client registration fail');
+              cb(new Error('client registration fail'));
               break;
             case 'register-ok':
               debug('Register ok');
