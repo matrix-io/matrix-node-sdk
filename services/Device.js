@@ -12,9 +12,7 @@ module.exports = {
   getSecret: getDeviceSecret,
 }
 
-//   `/v2/device/secret`
-// ```device_id
-// access_token)
+
 function getDeviceSecret(deviceId, cb){
 
   RequestHandler.get({
@@ -23,8 +21,9 @@ function getDeviceSecret(deviceId, cb){
     + 'device_id=' + deviceId,
     json: true
   }).then(function (results) {
+    debug(results);
     cb(null, results);
-  });
+  }).fail(cb);
 
 }
 
