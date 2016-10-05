@@ -10,9 +10,30 @@ log       = console.log;
 _         = require('lodash');
 debug     = D('sdk');
 
-var v = JSON.parse(require('fs').readFileSync(__dirname + '/package.json')).version;
+// do version check on debug
+if ( process.env.hasOwnProperty('DEBUG')){
+  var msg = "";
+  var info = JSON.parse(require('fs').readFileSync(__dirname + '/package.json'));
+  var currentVersion = info.version;
+  require('https').get(
+    'https://raw.githubusercontent.com/matrix-io/matrix-node-sdk/master/package.json',
+  function (res) {
+    var write = "";
+    res.on('data', function (c) {
+      write += c;
+    });
+    res.on('end', function (e) {
+      var remoteVersion = JSON.parse(write).version;
+      if (currentVersion === remoteVersion) {
+        msg = '(current)'.grey;
+      } else {
+        msg = '(can upgrade to '.yellow + remoteVersion +')'.yellow
+      }
+      debug( '🔓  [ MATRIX ] Auth SDK v'.yellow + currentVersion, msg);
+    });
+  })
+}
 
-debug( '🔓  [ MATRIX ] Auth SDK v'.yellow + v )
 
 
 // Internal Modules
