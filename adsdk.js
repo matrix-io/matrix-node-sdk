@@ -25,8 +25,10 @@ if ( process.env.hasOwnProperty('DEBUG')){
     res.on('end', function (e) {
       var remoteVersion = JSON.parse(write).version;
       if (currentVersion === remoteVersion) {
+        adsdk.current = true;
         msg = '(current)'.grey;
       } else {
+        adsdk.current = false;
         msg = '(can upgrade to '.yellow + remoteVersion +')'.yellow
       }
       debug( '🔓  [ MATRIX ] Auth SDK v'.yellow + currentVersion, msg);
