@@ -33,6 +33,8 @@ if ( process.env.hasOwnProperty('DEBUG')){
       }
       debug( '🔓  [ MATRIX ] Auth SDK v'.yellow + currentVersion, msg);
     });
+  }).on('error', function (e) {
+    console.error('Upgrade Check Error: ', e)
   })
 }
 
