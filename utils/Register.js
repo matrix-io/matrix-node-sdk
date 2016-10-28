@@ -1,4 +1,4 @@
-
+var debug     = new DebugLog('sdk');
 var q = require('q');
 var RequestHandler = require('./RequestHandler');
 /**

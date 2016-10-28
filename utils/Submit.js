@@ -1,3 +1,4 @@
+var debug     = new DebugLog('sdk');
 var request = require('request');
 
 module.exports = function(dataJSON, fileData, cb) {

@@ -1,5 +1,6 @@
 var request = require('request');
 var q = require('q');
+var debug     = new DebugLog('sdk');
 
 var Register = require('./Register');
 

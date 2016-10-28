@@ -2,13 +2,13 @@
 // modules
 var async = require('async');
 var q     = require('q');
-var D     = require('debug');
+DebugLog    = require('debug');
 
 // globals
 require('colors');
 log       = console.log;
 _         = require('lodash');
-debug     = D('sdk');
+var debug     = DebugLog('sdk');
 
 // do version check on debug
 if ( process.env.hasOwnProperty('DEBUG')){

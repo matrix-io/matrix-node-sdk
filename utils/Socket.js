@@ -1,4 +1,4 @@
-
+var debug     = new DebugLog('sdk');
 var socket;
 
 

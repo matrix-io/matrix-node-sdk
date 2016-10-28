@@ -1,3 +1,4 @@
+var debug     = new DebugLog('sdk');
 var request = require('request');
 var pathToRegexp = require('path-to-regexp');
 var config = require('../config/config');

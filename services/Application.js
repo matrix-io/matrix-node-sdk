@@ -1,3 +1,4 @@
+var debug     = new DebugLog('sdk:Application');
 var RequestHandler = require('../utils/RequestHandler');
 var Socket = require('../utils/Socket');
 var Device = require('./Device')
