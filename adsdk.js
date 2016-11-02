@@ -390,8 +390,8 @@ function stopApp(appName, deviceId, cb) {
   Application.stop(appName, deviceId, cb);
 }
 
-function restartApp() {
-  Application.restart(admatrix.config, cb);
+function restartApp(appName, cb) {
+  Application.restart(appName, cb);
 }
 
 function installApp(appInfo, deviceId, cb) {
