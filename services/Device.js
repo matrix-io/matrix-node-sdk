@@ -139,7 +139,9 @@ function authenticateDevice(deviceId, deviceSecret, cb) {
     url: url,
     form: postOpts,
     json: true
-  }).then(function(results){ cb(null, results); }, handleError);
+  }).then(function (results) { cb(null, results); }, function (err) {
+    handleError(err, cb);
+  });
 }
 
 function registerDevice(deviceId, cb) {
@@ -155,12 +157,13 @@ function registerDevice(deviceId, cb) {
   }).fail(cb);
 }
 
-function handleError(err) {
+function handleError(err, cb) {
   try {
     var err = JSON.parse(err);
   } catch (e) {
-    console.error('Device Error', err);
+    debug('Device Error', err);
   } finally {
     console.error('API Error: ', err.status_code, '-', err.error);
+    if (!_.isUndefined(cb)) cb(err);
   }
 }

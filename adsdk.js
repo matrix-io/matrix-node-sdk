@@ -210,8 +210,11 @@ function getDeviceToken(options, cb) {
   //make finished urls available
   makeUrls( options.apiServer );
 
-  Device.authenticate(options.deviceId, options.deviceSecret, function(err, res) {
-    if (err) return cb(new Error('Device Token Retrieval Error: '+err))
+  Device.authenticate(options.deviceId, options.deviceSecret, function (err, res) {
+    if (err) {
+      err.message = 'Device Token Retrieval Error';
+    }
+    return cb(err);
     debug('Device.getToken>', res.results.deviceToken);
     // v2 ? : v1
     var token = ( res.results.hasOwnProperty('deviceToken') ) ? res.results.deviceToken : res.results.device_token;
@@ -250,8 +253,11 @@ function authenticate(options, cb) {
     },
     function(cb) {
       if (has(options, 'deviceName')) {
-        Device.register(options.deviceId, function(err, results){
-          if (err) cb(new Error('Device Secret Retrieval Error:'+err))
+        Device.register(options.deviceId, function (err, results) {
+          if (err) {
+            err.message = 'Device Secret Retrieval Error';
+          }
+          return cb(err);
           admatrix.state.device.secret = results.results.device_token;
           cb();
         });
@@ -260,8 +266,11 @@ function authenticate(options, cb) {
       }
     },
     function getDeviceToken(cb){
-      Device.authenticate( options.deviceId, admatrix.state.device.secret, function(err, results){
-        if (err) return cb(new Error('Device Token Retrieval Error: '+err))
+      Device.authenticate(options.deviceId, admatrix.state.device.secret, function (err, results) {
+        if (err) {
+          err.message = 'Device Token Retrieval Error';
+        }
+        return cb(err);
         admatrix.state.device.token = results.results.device_token;
         cb();
       })
