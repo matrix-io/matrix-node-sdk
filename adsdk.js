@@ -213,8 +213,8 @@ function getDeviceToken(options, cb) {
   Device.authenticate(options.deviceId, options.deviceSecret, function (err, res) {
     if (err) {
       err.message = 'Device Token Retrieval Error';
+      return cb(err);
     }
-    return cb(err);
     debug('Device.getToken>', res.results.deviceToken);
     // v2 ? : v1
     var token = ( res.results.hasOwnProperty('deviceToken') ) ? res.results.deviceToken : res.results.device_token;
