@@ -10,35 +10,6 @@ log       = console.log;
 _         = require('lodash');
 debug     = D('sdk');
 
-// do version check on debug
-if ( process.env.hasOwnProperty('DEBUG')){
-  var msg = "";
-  var info = JSON.parse(require('fs').readFileSync(__dirname + '/package.json'));
-  var currentVersion = info.version;
-  require('https').get(
-    'https://raw.githubusercontent.com/matrix-io/matrix-node-sdk/master/package.json',
-  function (res) {
-    var write = "";
-    res.on('data', function (c) {
-      write += c;
-    });
-    res.on('end', function (e) {
-      var remoteVersion = JSON.parse(write).version;
-      if (currentVersion === remoteVersion) {
-        adsdk.current = true;
-        msg = '(current)'.grey;
-      } else {
-        adsdk.current = false;
-        msg = '(can upgrade to '.yellow + remoteVersion +')'.yellow
-      }
-      debug( '🔓  [ MATRIX ] Auth SDK v'.yellow + currentVersion, msg);
-    });
-  }).on('error', function (e) {
-    console.error('Upgrade Check Error: ', e)
-  })
-}
-
-
 
 // Internal Modules
 var RequestHandler  = require('./utils/RequestHandler');
@@ -130,6 +101,46 @@ var adsdk = {
   submit: DoSubmit,
   subscribe: subscribeStream,
   publish: publishStream
+}
+
+/**
+ * Compares the current isntalled version against the lastest remote version available
+ * @param {Function} cb Returns the following:
+ * {Error} err Error details
+ * {Object} version object that contains the following parameters:
+ *   - {String} local The version of the installed module
+ *   - {String} remote The latest version available of the module
+ *   - {bool} updated Boolean indicating wether the version is up to date or not
+ */
+adsdk.checkVersion = function (cb) {
+  var info = JSON.parse(require('fs').readFileSync(__dirname + '/package.json'));
+  var currentVersion = info.version;
+  require('https').get(
+    'https://raw.githubusercontent.com/matrix-io/matrix-node-sdk/master/package.json',
+    function (res) {
+      var write = '';
+      res.on('data', function (c) {
+        write += c;
+      });
+      res.on('end', function (e) {
+        var msg = '';
+        var remoteVersion = JSON.parse(write).version;
+        if (currentVersion === remoteVersion) {
+          adsdk.current = true;
+          msg = '(current)'.grey;
+        } else {
+          adsdk.current = false;
+          msg = '(can upgrade to '.yellow + remoteVersion + ')'.yellow
+        }
+        debug('🔓  [ MATRIX ] Auth SDK v'.yellow + currentVersion, msg);
+        cb(undefined, { local: currentVersion, remote: remoteVersion, updated: currentVersion === remoteVersion });
+      });
+    }).on('error', function (e) {
+      var errorMessage;
+      if (e.code === 'ENOTFOUND') errorMessage = 'SDK version check failed, unable to reach module repository';
+      else errorMessage = 'SDK upgrade check error: ' + e.message;
+      cb(errorMessage);
+    })
 }
 
 // populate user / device / etc
@@ -420,3 +431,4 @@ function publishStream(options, cb){}
 
 
 module.exports = adsdk;
+
