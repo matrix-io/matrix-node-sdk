@@ -1,54 +1,54 @@
 
 // modules
 var async = require('async');
-var q     = require('q');
-var D     = require('debug');
+var q = require('q');
+var D = require('debug');
 
 // globals
 require('colors');
-log       = console.log;
-_         = require('lodash');
-debug     = D('sdk');
+log = console.log;
+_ = require('lodash');
+debug = D('sdk');
 
 // do version check on debug
-if ( process.env.hasOwnProperty('DEBUG')){
+if (process.env.hasOwnProperty('DEBUG')) {
   var msg = "";
   var info = JSON.parse(require('fs').readFileSync(__dirname + '/package.json'));
   var currentVersion = info.version;
   require('https').get(
     'https://raw.githubusercontent.com/matrix-io/matrix-node-sdk/master/package.json',
-  function (res) {
-    var write = "";
-    res.on('data', function (c) {
-      write += c;
-    });
-    res.on('end', function (e) {
-      var remoteVersion = JSON.parse(write).version;
-      if (currentVersion === remoteVersion) {
-        adsdk.current = true;
-        msg = '(current)'.grey;
-      } else {
-        adsdk.current = false;
-        msg = '(can upgrade to '.yellow + remoteVersion +')'.yellow
-      }
-      debug( '🔓  [ MATRIX ] Auth SDK v'.yellow + currentVersion, msg);
-    });
-  }).on('error', function (e) {
-    console.error('Upgrade Check Error: ', e)
-  })
+    function (res) {
+      var write = "";
+      res.on('data', function (c) {
+        write += c;
+      });
+      res.on('end', function (e) {
+        var remoteVersion = JSON.parse(write).version;
+        if (currentVersion === remoteVersion) {
+          adsdk.current = true;
+          msg = '(current)'.grey;
+        } else {
+          adsdk.current = false;
+          msg = '(can upgrade to '.yellow + remoteVersion + ')'.yellow
+        }
+        debug('🔓  [ MATRIX ] Auth SDK v'.yellow + currentVersion, msg);
+      });
+    }).on('error', function (e) {
+      console.error('Upgrade Check Error: ', e)
+    })
 }
 
 
 
 // Internal Modules
-var RequestHandler  = require('./utils/RequestHandler');
-var Register        = require('./utils/Register');
-var Authenticator   = require('./utils/Authenticator');
-var DoSubmit        = require('./utils/Submit');
+var RequestHandler = require('./utils/RequestHandler');
+var Register = require('./utils/Register');
+var Authenticator = require('./utils/Authenticator');
+var DoSubmit = require('./utils/Submit');
 var Socket = require('./utils/Socket')
 
 var Application = require('./services/Application');
-var Device      = require('./services/Device');
+var Device = require('./services/Device');
 
 // TODO: admatrix global is ugly for an SDK, fix
 admatrix = {}
@@ -133,26 +133,20 @@ var adsdk = {
 }
 
 // populate user / device / etc
-function setConfig(extConfig){
+function setConfig(extConfig) {
   _.extend(admatrix.config, extConfig);
 }
 
-function configureApp(options,cb){
-  Application.configure(options,cb);
+function configureApp(options, cb) {
+  Application.configure(options, cb);
 }
 
-function refreshToken(){
-  Authenticator.refreshUserToken().then(function(d){
-    console.log('??',d);
-  })
-}
-
-function getLog(cb){
+function getLog(cb) {
   Application.getLog(cb);
 }
 
-function deployApp(config, cb){
-  Application.deploy( config, cb );
+function deployApp(config, cb) {
+  Application.deploy(config, cb);
 }
 
 function has(object, needle) {
@@ -172,23 +166,25 @@ function has(object, needle) {
 
 // get most recent version from server, return to Matrix
 // expecting { version: 'x.x.x', url: 'http://...' }
-function checkUpdates(cb){
-  RequestHandler.get( admatrix.config.url.device.update, { token : {
-    token: admatrix.state.device.token
-  }} ).then(cb).fail(cb);
+function checkUpdates(cb) {
+  RequestHandler.get(admatrix.config.url.device.update, {
+    token: {
+      token: admatrix.state.device.token
+    }
+  }).then(cb).fail(cb);
 }
 
 // add urls to global
-function makeUrls(base, stream){
+function makeUrls(base, stream) {
   admatrix.config.url = require('./config/url').populateUrls(base, stream);
 }
 
-function setClientToken(token){
+function setClientToken(token) {
   // TODO: Add error checking
   admatrix.state.client.token = token;
 }
 
-function setDeviceToken(token){
+function setDeviceToken(token) {
   // TODO: Add error checking
   admatrix.state.device.token = token;
 }
@@ -197,18 +193,18 @@ function setDeviceId(id) {
   admatrix.state.device.id = id;
 }
 
-function setUserToken(token){
+function setUserToken(token) {
   // TODO: Add error checking
   admatrix.state.user.token = token;
 }
 
 function getDeviceToken(options, cb) {
-  if ( _.isUndefined(options)){
+  if (_.isUndefined(options)) {
     options = adsdk.defaultOptions;
   }
 
   //make finished urls available
-  makeUrls( options.apiServer );
+  makeUrls(options.apiServer);
 
   Device.authenticate(options.deviceId, options.deviceSecret, function (err, res) {
     if (err) {
@@ -217,7 +213,7 @@ function getDeviceToken(options, cb) {
     }
     debug('Device.getToken>', res.results.deviceToken);
     // v2 ? : v1
-    var token = ( res.results.hasOwnProperty('deviceToken') ) ? res.results.deviceToken : res.results.device_token;
+    var token = (res.results.hasOwnProperty('deviceToken')) ? res.results.deviceToken : res.results.device_token;
     cb(null, token);
   })
 }
@@ -225,9 +221,9 @@ function getDeviceToken(options, cb) {
 function authenticate(options, cb) {
 
   // log("(adm) API-SDK Init=-v\n", options);
-  if ( _.isUndefined(options)){
+  if (_.isUndefined(options)) {
     options = adsdk.defaultOptions;
-    cb = function(){};
+    cb = function () { };
   }
 
   if (has(options, ['clientId', 'clientSecret', 'apiServer']) === false) {
@@ -237,21 +233,21 @@ function authenticate(options, cb) {
   }
 
   //make finished urls available
-  makeUrls( options.apiServer );
+  makeUrls(options.apiServer);
 
   //do all the authentications
   async.series([
-    function(cb) {
+    function (cb) {
       authenticateClient(options, cb);
     },
-    function(cb) {
+    function (cb) {
       if (has(options, 'username')) {
         authenticateUser(options, cb);
       } else {
         cb();
       }
     },
-    function(cb) {
+    function (cb) {
       if (has(options, 'deviceName')) {
         Device.register(options.deviceId, function (err, results) {
           if (err) {
@@ -265,7 +261,7 @@ function authenticate(options, cb) {
         cb(new Error('No deviceName Found'));
       }
     },
-    function getDeviceToken(cb){
+    function getDeviceToken(cb) {
       Device.authenticate(options.deviceId, admatrix.state.device.secret, function (err, results) {
         if (err) {
           err.message = 'Device Token Retrieval Error';
@@ -275,7 +271,7 @@ function authenticate(options, cb) {
         cb();
       })
     }
-  ], function(err) {
+  ], function (err) {
     if (err) return cb(err);
     console.log('-----', '  API Initalize Complete  '.green.bold, '-----');
     cb(null, admatrix.state);
@@ -290,44 +286,60 @@ function authenticateClient(options, cb) {
     return;
   }
   Authenticator.authenticateClient(options)
-  .then(function(response) {
-    if ( _.isUndefined(response)){
-      log('Client Authentication Failed : Bad ID or Secret'.red);
-      return cb('Client Auth Failed');
+    .then(function (response) {
+      if (_.isUndefined(response)) {
+        log('Client Authentication Failed : Bad ID or Secret'.red);
+        return cb('Client Auth Failed');
+      }
+      // log('Client Authenticated :'.blue, response);
+      admatrix.state.client = {
+        id: options.clientId,
+        secret: options.clientSecret,
+        token: response.access_token
+      };
+      cb(null, response);
+    }).fail(function (err) {
+      cb(err);
+    });
+}
+
+/**
+ * refreshToken - Use it to regenerate a valid user token
+ * @param {string} token Refresh token
+ * @param {function} cb Callback
+ */
+function refreshToken(token, cb) {
+  if (_.isEmpty(token)) return cb(new Error('No token passed to refreshToken()'));
+  console.log('PPPPPPPPP Refreshing with token: ', token);
+  Authenticator.refreshUserToken(token).then(function (response) {
+    console.log('PPPPPPPPP Worked:', response);
+    debug('Auth Refresh User'.blue, '->', response)
+    if (_.isUndefined(response) || response.status === 'error') {
+      log('User Authentication Refresh Failed'.red);
+      return cb(new Error('User Refresh Failed'));
     }
-    // log('Client Authenticated :'.blue, response);
-    admatrix.state.client = {
-      id: options.clientId,
-      secret: options.clientSecret,
-      token: response.access_token
-    };
-    cb(null, response);
-  }).fail(function(err) {
-    cb(err);
+    admatrix.state.user.token = response.access_token;
+  }).fail(function (err) {
+    console.log('PPPPPPPPP failed:', err);
+    return cb(new Error('User Refresh: ' + err.error));
   });
 }
 
-
-
 /**
 * authenticateUser - description
-*
-* @param  String options username
-* @param  String options password
-* @param  Fn     cb      callback
+* @param  {object} options {username, password}
+* @param  {function} cb callback
 */
-
 function authenticateUser(options, cb) {
-  // log('---> user', options);
   if (has(options, ['username', 'password'] === false)) {
     console.error('No username and password passed to authenticateUser()')
     // TODO: Must call "cb" function with a optional parameter
     return;
   }
 
-  Authenticator.authenticateUser(options).then(function(response) {
+  Authenticator.authenticateUser(options).then(function (response) {
     debug('Auth User'.blue, '->', response)
-    if ( _.isUndefined(response) || response.status === 'error'){
+    if (_.isUndefined(response) || response.status === 'error') {
       log('User Authentication Failed : Bad Username or Password '.red);
       return cb('User Auth Failed');
     }
@@ -336,55 +348,56 @@ function authenticateUser(options, cb) {
       name: options.username,
       token: response.access_token
     };
-    RequestHandler.get( admatrix.config.url.current.user + '?access_token=' + response.access_token )
-    .then(function(resp){
-      debug('Get User'.blue, '->', resp)
-      try {
-        var userInfo = JSON.parse(resp);
-      } catch (e) {
-        console.error('Bad Current User from Server', resp, e);
-      }
-      admatrix.state.user.id = userInfo.results.user.id;
-      cb(null, _.extend(response, { id : admatrix.state.user.id }));
-    }).fail(function(err){
-      cb(new Error("User Info : " + err + err.stack));
-    });
-  }).fail(function(err) {
-    cb(new Error("User Auth: " + err.error ));
+    RequestHandler.get(admatrix.config.url.current.user + '?access_token=' + response.access_token)
+      .then(function (resp) {
+        debug('Get User'.blue, '->', resp)
+        try {
+          var userInfo = JSON.parse(resp);
+        } catch (e) {
+          console.error('Bad Current User from Server', resp, e);
+        }
+        admatrix.state.user.id = userInfo.results.user.id;
+        cb(null, _.extend(response, { id: admatrix.state.user.id }));
+      }).fail(function (err) {
+        cb(new Error("User Info : " + err + err.stack));
+      });
+  }).fail(function (err) {
+    cb(new Error('User Auth: ' + err.error));
   });
 }
 
+
 function registerUser(username, password, clientId, cb) {
-  if (_.isUndefined(username) || _.isUndefined(password) || _.isUndefined(clientId)) {
+  if (_.isUndefined(username) ||  _.isUndefined(password) || _.isUndefined(clientId)) {
     console.error('No username and password passed to registerUser()')
     return;
   }
 
-  Register.registerUser(username, password, clientId).then(function(response) {
+  Register.registerUser(username, password, clientId).then(function (response) {
     admatrix.state.user = {
       name: username,
       token: response
     };
     cb(null, response);
-  }).fail(function(err) {
+  }).fail(function (err) {
     cb(err);
   });
 
 }
 
-function installSensor(name, cb){
-  Socket.sendDeviceCommand('sensor-install', name, function(err, resp){
+function installSensor(name, cb) {
+  Socket.sendDeviceCommand('sensor-install', name, function (err, resp) {
     if (err) return console.error(err);
-    cb(null,resp);
+    cb(null, resp);
   });
 
 }
 
-function submitDeviceData(options, cb) {}
+function submitDeviceData(options, cb) { }
 
-function subscribeStream(options, cb) {}
+function subscribeStream(options, cb) { }
 
-function publishStream(options, cb) {}
+function publishStream(options, cb) { }
 
 
 function listApps(cb) {
@@ -415,8 +428,8 @@ function updateApp() {
 
 }
 
-function subscribeStream(options, cb){}
-function publishStream(options, cb){}
+function subscribeStream(options, cb) { }
+function publishStream(options, cb) { }
 
 
 module.exports = adsdk;
