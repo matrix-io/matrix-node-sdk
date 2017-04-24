@@ -79,9 +79,7 @@ function refreshUserToken(refreshToken) {
 
   RequestHandler.post({ url: url, form: form, json: true })
     .then(function (body) {
-      console.log('Posted refresh:', form);
       admatrix.state.user.token = body.results;
-      //console.log(body.results);
       defer.resolve(body.results);
     }).fail(null, defer.reject);
 

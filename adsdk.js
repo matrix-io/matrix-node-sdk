@@ -88,7 +88,8 @@ var adsdk = {
   },
 
   user: {
-    setToken: setUserToken
+    setToken: setUserToken,
+    refresh: refreshToken
   },
 
   // authenticate all the things
@@ -123,9 +124,6 @@ var adsdk = {
     device: Device.register,
     user: registerUser
   },
-
-  refresh: refreshToken,
-
   // communications
   submit: DoSubmit,
   subscribe: subscribeStream,
@@ -310,9 +308,7 @@ function authenticateClient(options, cb) {
  */
 function refreshToken(token, cb) {
   if (_.isEmpty(token)) return cb(new Error('No token passed to refreshToken()'));
-  console.log('PPPPPPPPP Refreshing with token: ', token);
   Authenticator.refreshUserToken(token).then(function (response) {
-    console.log('PPPPPPPPP Worked:', response);
     debug('Auth Refresh User'.blue, '->', response)
     if (_.isUndefined(response) || response.status === 'error') {
       log('User Authentication Refresh Failed'.red);
@@ -320,7 +316,6 @@ function refreshToken(token, cb) {
     }
     admatrix.state.user.token = response.access_token;
   }).fail(function (err) {
-    console.log('PPPPPPPPP failed:', err);
     return cb(new Error('User Refresh: ' + err.error));
   });
 }
