@@ -308,16 +308,20 @@ function authenticateClient(options, cb) {
  */
 function refreshToken(token, cb) {
   if (_.isEmpty(token)) return cb(new Error('No token passed to refreshToken()'));
-  Authenticator.refreshUserToken(token).then(function (response) {
-    debug('Auth Refresh User'.blue, '->', response)
-    if (_.isUndefined(response) || response.status === 'error') {
-      log('User Authentication Refresh Failed'.red);
-      return cb(new Error('User Refresh Failed'));
-    }
-    admatrix.state.user.token = response.access_token;
-  }).fail(function (err) {
-    return cb(new Error('User Refresh: ' + err.error));
-  });
+  Authenticator.refreshUserToken(token)
+    .then(function (response) {
+      debug('Auth Refresh User'.blue, '->', response)
+      if (_.isUndefined(response) || response.status === 'error' || _.isEmpty(response.access_token)) {
+        log('User Authentication Refresh Failed'.red);
+        return cb(new Error('User Refresh Failed'));
+      } else {
+        admatrix.state.user.token = response.access_token;
+        return cb(undefined, response.access_token);
+      }
+    })
+    .catch(function (err) {
+      return cb(new Error('User refresh failed: ' + err));
+    });
 }
 
 /**

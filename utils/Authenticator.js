@@ -81,7 +81,11 @@ function refreshUserToken(refreshToken) {
     .then(function (body) {
       admatrix.state.user.token = body.results;
       defer.resolve(body.results);
-    }).fail(null, defer.reject);
+    })
+    .catch(function (err) { 
+      console.log('Token refresh failed', err.message);
+      defer.reject(err)
+    });
 
   return defer.promise;
 }
