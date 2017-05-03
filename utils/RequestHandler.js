@@ -1,8 +1,4 @@
 var request = require('request');
-var pathToRegexp = require('path-to-regexp');
-var config = require('../config/config');
-var querystring = require('querystring');
-
 var q = require('q');
 
 /**
@@ -21,17 +17,15 @@ var q = require('q');
  */
 function get(params) {
   var defer = q.defer();
-  //url += "?device_token=" + deviceToken;
-  //querystring.stringify(params);
   debug('[get]', params)
   request.get(params, function(error, response, body) {
     debug('[get>', body);
     if (error) {
       defer.reject(error);
     } else if ( response.statusCode !== 200 ){
-        defer.reject(body);
-    } else if (!body || body === "") {
-      defer.reject(new Error("Error " + response.status));
+      defer.reject(body);
+    } else if (!body || body === '') {
+      defer.reject(new Error('Error ' + response.status));
     } else {
       handleResponse(body).then(defer.resolve, defer.reject);
     }
@@ -52,15 +46,22 @@ function get(params) {
 function post(params) {
   var defer = q.defer();
 
-  debug('[post]', params)
-   request.post(params, function(error, response, body) {
-    debug('[post]', body);
+  debug('[post] params:', params)
+  var options = {
+    method: 'post',
+    body: params.form,
+    json: params.json || false,
+    url: params.url
+  }
+
+  request(options, function (error, response, body) {
+    debug('[post] body:', body);
     if (error) {
       defer.reject(error);
     } else if ( response.statusCode !== 200 ){
-        defer.reject(body);
+      defer.reject(body);
     } else if (!body || body === "") {
-      defer.reject(new Error("Error " + response.status));
+      defer.reject(new Error('Error ' + response.status));
     } else {
       handleResponse(body).then(defer.resolve, defer.reject);
     }
@@ -80,12 +81,12 @@ function put(params) {
   var defer = q.defer();
 
   debug('[put]', params)
-   request.put(params, function(error, response, body) {
+  request.put(params, function (error, response, body) {
     debug('[put]', body);
     if (error) {
       defer.reject(error);
-    } else if ( response.statusCode !== 200 ){
-        defer.reject(body);
+    } else if (response.statusCode !== 200) {
+      defer.reject(body);
     } else if (!body || body === "") {
       defer.reject(new Error("Error " + response.status));
     } else {
@@ -106,14 +107,14 @@ function del(params) {
   var defer = q.defer();
 
   debug('[delete]', params)
-   request.del(params, function(error, response, body) {
+  request.del(params, function(error, response, body) {
     debug('[delete]', body);
     if (error) {
       defer.reject(error);
     } else if ( response.statusCode !== 200 ){
-        defer.reject(body);
-    } else if (!body || body === "") {
-      defer.reject(new Error("Error " + response.status));
+      defer.reject(body);
+    } else if (!body || body === '') {
+      defer.reject(new Error('Error ' + response.status));
     } else {
       handleResponse(body).then(defer.resolve, defer.reject);
     }
