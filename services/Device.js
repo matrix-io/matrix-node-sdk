@@ -21,7 +21,7 @@ function getDeviceSecret(deviceId, cb){
     + 'device_id=' + deviceId,
     json: true
   }).then(function (results) {
-    debug(results);
+    // debug(results);
     cb(null, results);
   }).fail(cb);
 

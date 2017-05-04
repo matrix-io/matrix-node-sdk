@@ -96,7 +96,7 @@ var RequestHandler = require('./RequestHandler');
     RequestHandler.post({url:url, form: form, json:true })
     .then(function(body){
       admatrix.state.user.token = body.results;
-      console.log(body.results);
+      // console.log(body.results);
       defer.resolve(body.results);
     }).then(null, defer.reject);
 

@@ -215,7 +215,7 @@ function getDeviceToken(options, cb) {
       err.message = 'Device Token Retrieval Error';
       return cb(err);
     }
-    debug('Device.getToken>', res.results.deviceToken);
+    // debug('Device.getToken>', res.results.deviceToken);
     // v2 ? : v1
     var token = ( res.results.hasOwnProperty('deviceToken') ) ? res.results.deviceToken : res.results.device_token;
     cb(null, token);
