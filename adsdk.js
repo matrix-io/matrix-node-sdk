@@ -1,4 +1,3 @@
-
 // modules
 var async = require('async');
 var q = require('q');
@@ -11,32 +10,32 @@ _ = require('lodash');
 debug = D('sdk');
 
 // do version check on debug
-if (process.env.hasOwnProperty('DEBUG')) {
-  var msg = "";
-  var info = JSON.parse(require('fs').readFileSync(__dirname + '/package.json'));
-  var currentVersion = info.version;
-  require('https').get(
-    'https://raw.githubusercontent.com/matrix-io/matrix-node-sdk/master/package.json',
-    function (res) {
-      var write = "";
-      res.on('data', function (c) {
-        write += c;
-      });
-      res.on('end', function (e) {
-        var remoteVersion = JSON.parse(write).version;
-        if (currentVersion === remoteVersion) {
-          adsdk.current = true;
-          msg = '(current)'.grey;
-        } else {
-          adsdk.current = false;
-          msg = '(can upgrade to '.yellow + remoteVersion + ')'.yellow
-        }
-        debug('🔓  [ MATRIX ] Auth SDK v'.yellow + currentVersion, msg);
-      });
-    }).on('error', function (e) {
-      console.error('Upgrade Check Error: ', e)
-    })
-}
+// if (process.env.hasOwnProperty('DEBUG')) {
+//   var msg = "";
+//   var info = JSON.parse(require('fs').readFileSync(__dirname + '/package.json'));
+//   var currentVersion = info.version;
+//   require('https').get(
+//     'https://raw.githubusercontent.com/matrix-io/matrix-node-sdk/master/package.json',
+//     function (res) {
+//       var write = "";
+//       res.on('data', function (c) {
+//         write += c;
+//       });
+//       res.on('end', function (e) {
+//         var remoteVersion = JSON.parse(write).version;
+//         if (currentVersion === remoteVersion) {
+//           adsdk.current = true;
+//           msg = '(current)'.grey;
+//         } else {
+//           adsdk.current = false;
+//           msg = '(can upgrade to '.yellow + remoteVersion + ')'.yellow
+//         }
+//         debug('🔓  [ MATRIX ] Auth SDK v'.yellow + currentVersion, msg);
+//       });
+//     }).on('error', function (e) {
+//       console.error('Upgrade Check Error: ', e)
+//     })
+// }
 
 
 
@@ -204,7 +203,7 @@ function getDeviceToken(options, cb) {
   //make finished urls available
   makeUrls(options.apiServer);
 
-  Device.authenticate(options.deviceId, options.deviceSecret, function (err, res) {
+  Device.authenticate(options.deviceId, options.deviceSecret, function(err, res) {
     if (err) {
       err.message = 'Device Token Retrieval Error';
       return cb(err);
@@ -221,7 +220,7 @@ function authenticate(options, cb) {
   // log("(adm) API-SDK Init=-v\n", options);
   if (_.isUndefined(options)) {
     options = adsdk.defaultOptions;
-    cb = function () { };
+    cb = function() {};
   }
 
   if (has(options, ['clientId', 'clientSecret', 'apiServer']) === false) {
@@ -235,19 +234,19 @@ function authenticate(options, cb) {
 
   //do all the authentications
   async.series([
-    function (cb) {
+    function(cb) {
       authenticateClient(options, cb);
     },
-    function (cb) {
+    function(cb) {
       if (has(options, 'username')) {
         authenticateUser(options, cb);
       } else {
         cb();
       }
     },
-    function (cb) {
+    function(cb) {
       if (has(options, 'deviceName')) {
-        Device.register(options.deviceId, function (err, results) {
+        Device.register(options.deviceId, function(err, results) {
           if (err) {
             err.message = 'Device Secret Retrieval Error';
           }
@@ -260,7 +259,7 @@ function authenticate(options, cb) {
       }
     },
     function getDeviceToken(cb) {
-      Device.authenticate(options.deviceId, admatrix.state.device.secret, function (err, results) {
+      Device.authenticate(options.deviceId, admatrix.state.device.secret, function(err, results) {
         if (err) {
           err.message = 'Device Token Retrieval Error';
         }
@@ -269,7 +268,7 @@ function authenticate(options, cb) {
         cb();
       })
     }
-  ], function (err) {
+  ], function(err) {
     if (err) return cb(err);
     console.log('-----', '  API Initalize Complete  '.green.bold, '-----');
     cb(null, admatrix.state);
@@ -280,11 +279,11 @@ function authenticateClient(options, cb) {
   // log('auth client---v', options);
   if (has(options, ['clientId', 'clientSecret']) === false) {
     console.error('No clientId or clientSecret passed to authenticate client()')
-    // TODO: Must call "cb" function with a optional parameter
+      // TODO: Must call "cb" function with a optional parameter
     return;
   }
   Authenticator.authenticateClient(options)
-    .then(function (response) {
+    .then(function(response) {
       if (_.isUndefined(response)) {
         log('Client Authentication Failed : Bad ID or Secret'.red);
         return cb('Client Auth Failed');
@@ -296,7 +295,7 @@ function authenticateClient(options, cb) {
         token: response.access_token
       };
       cb(null, response);
-    }).fail(function (err) {
+    }).fail(function(err) {
       cb(err);
     });
 }
@@ -309,7 +308,7 @@ function authenticateClient(options, cb) {
 function refreshToken(token, cb) {
   if (_.isEmpty(token)) return cb(new Error('No token passed to refreshToken()'));
   Authenticator.refreshUserToken(token)
-    .then(function (response) {
+    .then(function(response) {
       debug('Auth Refresh User'.blue, '->', response)
       if (_.isUndefined(response) || response.status === 'error' || _.isEmpty(response.access_token)) {
         log('User Authentication Refresh Failed'.red);
@@ -319,24 +318,24 @@ function refreshToken(token, cb) {
         return cb(undefined, response.access_token);
       }
     })
-    .catch(function (err) {
+    .catch(function(err) {
       return cb(new Error('User refresh failed: ' + err));
     });
 }
 
 /**
-* authenticateUser - description
-* @param  {object} options {username, password}
-* @param  {function} cb callback
-*/
+ * authenticateUser - description
+ * @param  {object} options {username, password}
+ * @param  {function} cb callback
+ */
 function authenticateUser(options, cb) {
   if (has(options, ['username', 'password'] === false)) {
     console.error('No username and password passed to authenticateUser()')
-    // TODO: Must call "cb" function with a optional parameter
+      // TODO: Must call "cb" function with a optional parameter
     return;
   }
 
-  Authenticator.authenticateUser(options).then(function (response) {
+  Authenticator.authenticateUser(options).then(function(response) {
     debug('Auth User'.blue, '->', response)
     if (_.isUndefined(response) || response.status === 'error') {
       log('User Authentication Failed : Bad Username or Password '.red);
@@ -348,7 +347,7 @@ function authenticateUser(options, cb) {
       token: response.access_token
     };
     RequestHandler.get(admatrix.config.url.current.user + '?access_token=' + response.access_token)
-      .then(function (resp) {
+      .then(function(resp) {
         debug('Get User'.blue, '->', resp)
         try {
           var userInfo = JSON.parse(resp);
@@ -357,10 +356,10 @@ function authenticateUser(options, cb) {
         }
         admatrix.state.user.id = userInfo.results.user.id;
         cb(null, _.extend(response, { id: admatrix.state.user.id }));
-      }).fail(function (err) {
+      }).fail(function(err) {
         cb(new Error("User Info : " + err + err.stack));
       });
-  }).fail(function (err) {
+  }).fail(function(err) {
     cb(new Error('User Auth: ' + err.error));
   });
 }
@@ -372,31 +371,31 @@ function registerUser(username, password, clientId, cb) {
     return;
   }
 
-  Register.registerUser(username, password, clientId).then(function (response) {
+  Register.registerUser(username, password, clientId).then(function(response) {
     admatrix.state.user = {
       name: username,
       token: response
     };
     cb(null, response);
-  }).fail(function (err) {
+  }).fail(function(err) {
     cb(err);
   });
 
 }
 
 function installSensor(name, cb) {
-  Socket.sendDeviceCommand('sensor-install', name, function (err, resp) {
+  Socket.sendDeviceCommand('sensor-install', name, function(err, resp) {
     if (err) return console.error(err);
     cb(null, resp);
   });
 
 }
 
-function submitDeviceData(options, cb) { }
+function submitDeviceData(options, cb) {}
 
-function subscribeStream(options, cb) { }
+function subscribeStream(options, cb) {}
 
-function publishStream(options, cb) { }
+function publishStream(options, cb) {}
 
 
 function listApps(cb) {
@@ -427,8 +426,9 @@ function updateApp() {
 
 }
 
-function subscribeStream(options, cb) { }
-function publishStream(options, cb) { }
+function subscribeStream(options, cb) {}
+
+function publishStream(options, cb) {}
 
 
 module.exports = adsdk;
