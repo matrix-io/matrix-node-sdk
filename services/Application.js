@@ -4,6 +4,7 @@ var Device = require('./Device')
 
 var request = require('request');
 var fs = require('fs');
+var async = require('async');
 
 /* handles application REST requests */
 module.exports = {
@@ -70,9 +71,18 @@ function configureApp(options, cb) {
 
 
 function startApp(appName, deviceId, cb) {
-  sendDeviceCommand('app-start', {
-    name: appName
-  }, cb);
+  if(Array.isArray(deviceId)) {
+    async.each(deviceId, function(did, callback){
+      sendDeviceCommand('app-start', {
+        name: appName
+      });
+    });
+  } else {
+    sendDeviceCommand('app-start', {
+      name: appName
+    }, cb);
+  }
+  
 }
 
 function restartApp(appName, cb) {
@@ -90,6 +100,29 @@ function trigger(deviceId, data, cb) {
 function stopApp(appName, deviceId, cb) {
   sendDeviceCommand('app-stop', {
     name: appName
+  }, cb);
+}
+
+//Group support
+
+function startGroupApp(appName, groupName, cb) {
+  sendDeviceCommand('app-group-start', {
+    name: appName,
+    groupName: groupName
+  }, cb);
+}
+
+function restartGroupApp(appName, groupName, cb) {
+  sendDeviceCommand('app-group-restart', {
+    name: appName,
+    groupName: groupName
+  }, cb);
+}
+
+function stopGroupApp(appName, groupName, cb) {
+  sendDeviceCommand('app-group-stop', {
+    name: appName,
+    groupName: groupName
   }, cb);
 }
 
