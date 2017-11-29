@@ -71,19 +71,9 @@ function configureApp(options, cb) {
 
 
 function startApp(appName, deviceId, cb) {
-  if(Array.isArray(deviceId)) {
-    async.each(deviceId, function(did, callback){
-      sendDeviceCommand('app-start', {
-        name: appName
-      }, callback);
-    }, function(err){
-      if(err) return err;
-    });
-  } else {
-    sendDeviceCommand('app-start', {
-      name: appName
-    }, cb);
-  }  
+  sendDeviceCommand('app-start', {
+    name: appName
+  }, cb);
 }
 
 function restartApp(appName, cb) {

@@ -4,6 +4,12 @@ var socket;
 
 function sendDeviceCommand(eventName, payload, cb, options) {
 
+  console.log("************************");
+  console.log(eventName);
+  console.log(payload);
+  console.log(options);
+  console.log("************************");
+
   // TODO: Parameter defaults in ES6
   var options = ( _.isUndefined(options) ) ? {} : options;
 
@@ -47,13 +53,30 @@ function sendDeviceCommand(eventName, payload, cb, options) {
               break;
             case 'register-ok':
               debug('Register ok');
-              var theEvent = {
-                t: eventName,
-                deviceId: admatrix.config.device.identifier,
-                p: payload
-              };
-              debug('[ss]', theEvent);
-              // don't like this
+              var theEvent = {};            
+              //groups case
+              if(_.isArray(admatrix.config.device.identifier)) {
+                async.map(admatrix.config.device.identifier, function (did, callback) {
+                  theEvent = {
+                    t: eventName,
+                    deviceId: did,
+                    p: payload
+                  };
+                  debug('[ss] Groups Start: ', theEvent);
+                  emitSocket('client-cmd', theEvent);
+                }, function(err) {
+                  if(err) cb(err);
+                })
+              } else {
+                var theEvent = {
+                  t: eventName,
+                  deviceId: admatrix.config.device.identifier,
+                  p: payload
+                };
+                debug('[ss]', theEvent);
+                // don't like this
+              }
+              
               emitSocket('client-cmd', theEvent);
               if ( options.keepOpen === true ) {
                 //do nothing

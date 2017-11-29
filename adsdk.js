@@ -187,7 +187,12 @@ function setDeviceToken(token) {
 }
 
 function setDeviceId(id) {
-  admatrix.state.device.id = id;
+  if(_.isArray(id)){
+    admatrix.state.device.id = [];
+    id.map(did => admatrix.state.device.id.push(did));
+  } else {
+    admatrix.state.device.id = id;    
+  }
 }
 
 function setUserToken(token) {
