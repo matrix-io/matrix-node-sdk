@@ -1,6 +1,5 @@
 
 var socket;
-var util = require('util');
 
 function sendDeviceCommand(eventName, payload, cb, options) {
 
@@ -147,7 +146,6 @@ function initSocket(sUrl, cb){
 }
 
 function emitSocket(channel, msg){
-  debug('¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬');
   debug('[ss]>', channel.blue, msg)
   socket.send(JSON.stringify({
     channel: channel, payload: msg
