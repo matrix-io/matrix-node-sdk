@@ -1,14 +1,8 @@
 
 var socket;
-
+var util = require('util');
 
 function sendDeviceCommand(eventName, payload, cb, options) {
-
-  console.log("************************");
-  console.log(eventName);
-  console.log(payload);
-  console.log(options);
-  console.log("************************");
 
   // TODO: Parameter defaults in ES6
   var options = ( _.isUndefined(options) ) ? {} : options;
@@ -53,13 +47,13 @@ function sendDeviceCommand(eventName, payload, cb, options) {
               break;
             case 'register-ok':
               debug('Register ok');
-              var theEvent = {};            
+              var theEvent = {};
               //groups case
-              if(_.isArray(admatrix.config.device.identifier)) {
+              if(_.isArray(admatrix.config.device.identifier)) {               
                 async.map(admatrix.config.device.identifier, function (did, callback) {
                   theEvent = {
                     t: eventName,
-                    deviceId: did,
+                    deviceId: did.identifier,
                     p: payload
                   };
                   debug('[ss] Groups Start: ', theEvent);
@@ -153,6 +147,7 @@ function initSocket(sUrl, cb){
 }
 
 function emitSocket(channel, msg){
+  debug('¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬');
   debug('[ss]>', channel.blue, msg)
   socket.send(JSON.stringify({
     channel: channel, payload: msg
