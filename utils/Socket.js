@@ -67,7 +67,6 @@ function sendDeviceCommand(eventName, payload, cb, options) {
                   p: payload
                 };
                 debug('[ss]', theEvent);
-                // don't like this
               }
               
               emitSocket('client-cmd', theEvent);

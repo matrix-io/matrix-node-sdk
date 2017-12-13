@@ -94,29 +94,6 @@ function stopApp(appName, deviceId, cb) {
   }, cb);
 }
 
-//Group support
-
-function startGroupApp(appName, groupName, cb) {
-  sendDeviceCommand('app-group-start', {
-    name: appName,
-    groupName: groupName
-  }, cb);
-}
-
-function restartGroupApp(appName, groupName, cb) {
-  sendDeviceCommand('app-group-restart', {
-    name: appName,
-    groupName: groupName
-  }, cb);
-}
-
-function stopGroupApp(appName, groupName, cb) {
-  sendDeviceCommand('app-group-stop', {
-    name: appName,
-    groupName: groupName
-  }, cb);
-}
-
 function createApp(options, cb){
   var form = {
     current_version : options.version || '0.0.0',

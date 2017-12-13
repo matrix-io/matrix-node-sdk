@@ -187,13 +187,15 @@ function setDeviceToken(token) {
 }
 
 function setDeviceId(id) {
+  //if the device id is only a single device
   if (!_.isArray(id)) {
     admatrix.state.device.id = id;
   } else {
-    if (id.length > 1) {
+    if (id.length > 1) { //we are passing an array of devices, so it's a group devices
       admatrix.state.device.id = [];
       id.map(did => admatrix.state.device.id.push(did));
     } else {
+      //in somecases we can pass an array of devices, but with only one device, this is just to avoid async functions in Socket.js      
       admatrix.state.device.id = id;
     }
   }
